@@ -1,1 +1,56 @@
+version: "3.9"
 
+services:
+  web:
+    build: ./app
+    expose:
+      - "8000"
+    volumes:
+      - web-django:/app
+      - web-static:/app/static
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SECRET_KEY=${WEB_KEY}
+    depends_on:
+      - postgres
+    # command: gunicorn config.wsgi -w 2 -b :8000
+    command: python3 manage.py runserver 0.0.0.0:8000
+
+  nginx:
+    image: nginx:1.21
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - web-static:/www/static
+    configs:
+      - source: nginx_conf
+        target: /etc/nginx/nginx.conf
+      - source: nginx_site
+        target: /etc/nginx/conf.d/site.conf
+
+  postgres:
+    image: postgres:14
+    expose:
+      - ${DB_PORT}
+    environment:
+      - POSTGRES_NAME=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+
+volumes:
+  web-django:
+  web-static:
+  pgdata:
+
+configs:
+  nginx_conf:
+    file: ./nginx/nginx.conf
+  nginx_site:
+    file: ./nginx/site.conf

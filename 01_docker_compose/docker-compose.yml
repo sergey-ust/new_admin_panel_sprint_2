@@ -3,10 +3,11 @@ version: "3.9"
 services:
   web:
     build: ./app
+    image: dj_movies
     expose:
       - "8000"
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8001:8000"
     volumes:
       - web-static:/app/static
     environment:
@@ -18,8 +19,7 @@ services:
       - SECRET_KEY=${WEB_KEY}
     depends_on:
       - postgres
-    #command: gunicorn --bind 0.0.0.0:8000 config.wsgi
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: gunicorn --bind 0.0.0.0:8000 config.wsgi
 
 
   postgres:

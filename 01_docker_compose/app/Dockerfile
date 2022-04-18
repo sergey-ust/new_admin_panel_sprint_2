@@ -12,7 +12,7 @@ ENV PYTHONUNBUFFERED 1
 RUN apk update
 
 # install dependencies
-COPY req_3_9.txt /app/requirements.txt
+COPY requirements.txt /app/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade pip &&\
  pip install --no-cache-dir -r requirements.txt &&\

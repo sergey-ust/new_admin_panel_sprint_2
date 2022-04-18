@@ -1,0 +1,7 @@
+# python 3.9.7
+
+Django==4.0.3
+django-split-settings==1.1.0
+django_debug_toolbar==3.2.4
+psycopg2-binary==2.9.3
+python-dotenv==0.20.0

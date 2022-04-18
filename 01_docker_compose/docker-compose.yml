@@ -1,1 +1,52 @@
+version: "3.9"
+
+services:
+  web:
+    build: ./app
+    image: dj_movies
+    expose:
+      - "8000"
+    ports:
+      - "127.0.0.1:8001:8000"
+    volumes:
+      - web-static:/app/static
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - SECRET_KEY=${WEB_KEY}
+    depends_on:
+      - postgres
+    command: gunicorn --bind 0.0.0.0:8000 config.wsgi
+
+
+  postgres:
+    build: ./db
+    image: psql
+    expose:
+      - ${DB_PORT}
+    ports:
+      - "127.0.0.1:5000:${DB_PORT}"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - "1337:80"
+    volumes:
+      - web-static:/www/static
+    depends_on:
+      - web
+
+volumes:
+  web-static:
+  pgdata:
 

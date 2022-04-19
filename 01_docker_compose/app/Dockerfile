@@ -8,7 +8,6 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-
 RUN apk update
 
 # install dependencies
@@ -21,4 +20,7 @@ RUN pip install --no-cache-dir --upgrade pip &&\
 
 COPY . .
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi"]
+RUN sed -i 's/\r$//g' /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+CMD ["/app/entrypoint.sh"]

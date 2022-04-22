@@ -1,4 +1,5 @@
-from django.db.models import QuerySet
+from django.contrib.postgres.aggregates import ArrayAgg
+from django.db.models import QuerySet, Q
 from django.http import JsonResponse
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
@@ -50,8 +51,29 @@ class MoviesDetailApi(MoviesApiMixin, BaseDetailView):
 
     def get(self, request, pk, *args, **kwargs):
         queryset = self.get_queryset()
-        movie = queryset.get()
-        context = {
-            "title": movie.title,
-        }
-        return JsonResponse(context)
+        genre_list = ArrayAgg('genres__name', distinct=True)
+        actors = ArrayAgg(
+            'person__full_name',
+            filter=Q(person__personfilmwork__role="actor"),
+            distinct=True
+        )
+        directors = ArrayAgg(
+            'person__full_name',
+            filter=Q(person__personfilmwork__role="director"),
+            distinct=True
+        )
+        writers = ArrayAgg(
+            'person__full_name',
+            filter=Q(person__personfilmwork__role="writer"),
+            distinct=True
+        )
+        queryset = queryset.annotate(genre_list=genre_list)
+        queryset = queryset.annotate(actors=actors)
+        queryset = queryset.annotate(directors=directors)
+        queryset = queryset.annotate(writers=writers)
+
+        context = queryset.values()[0]
+        context["genres"] = context.pop("genre_list")
+        del context["created"], context["modified"]
+        resp = JsonResponse(context)
+        return resp

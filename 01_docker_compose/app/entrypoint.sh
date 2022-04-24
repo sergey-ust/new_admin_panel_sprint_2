@@ -9,9 +9,6 @@ done
 echo "DB started"
 
 
-echo "Collect static files"
-python manage.py collectstatic --noinput
-
 echo "Apply DB migrations"
 python manage.py migrate
 

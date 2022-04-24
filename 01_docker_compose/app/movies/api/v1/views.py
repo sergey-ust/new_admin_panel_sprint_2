@@ -47,7 +47,7 @@ class MoviesApiMixin:
         context = list()
         for entry in tmp:
             res = {
-                ("genres" if k is "genre_list" else k): v for (k, v) in
+                ("genres" if k == "genre_list" else k): v for (k, v) in
                 entry.items()
             }
             del res["created"], res["modified"]
@@ -81,7 +81,7 @@ class MoviesListApi(MoviesApiMixin, BaseListView):
 
 class MoviesDetailApi(MoviesApiMixin, BaseDetailView):
 
-    def get(self, request, pk, *args, **kwargs):
+    def get(self, request, pk, *args, **kwargs) -> JsonResponse:
         queryset = self.model.objects.filter(pk=pk)
         context = self.model_to_dict(queryset)
         return JsonResponse(context[0])

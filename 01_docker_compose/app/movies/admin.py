@@ -1,10 +1,9 @@
 """Admin panel models."""
 
 from django.contrib import admin
-from django.utils.translation import gettext_lazy as _
+from django.db.models import Prefetch
 
 from movies import models as mov_model
-from django.db.models import Prefetch
 
 
 @admin.register(mov_model.Genre)
@@ -52,9 +51,3 @@ class FilmWorkAdmin(admin.ModelAdmin):
         return super().get_queryset(request).prefetch_related(
             *self.list_prefetch_related
         ).all()
-
-# @admin.display(description=_('director'))
-# def get_directors(self, obj):
-#     return ', '.join([person.full_name for person in
-#                       obj.person.filter(
-#                           personfilmwork__role='director')])

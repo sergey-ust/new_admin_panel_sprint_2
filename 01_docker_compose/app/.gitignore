@@ -14,3 +14,6 @@ __pycache__/
 # Translations
 *.mo
 *.pot
+
+# Static files
+/static

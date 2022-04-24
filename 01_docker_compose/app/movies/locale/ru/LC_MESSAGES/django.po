@@ -70,7 +70,7 @@ msgstr "тв программа"
 
 #: movies/models.py:63 movies/models.py:137
 msgid "(unknown)"
-msgstr ""
+msgstr "(неизвестно)"
 
 #: movies/models.py:65
 msgid "film_name"

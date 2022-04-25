@@ -12,13 +12,14 @@ RUN apk update &&\
     apk --no-cache add gettext
 
 
-COPY . .
+COPY requirements.txt /app/requirements.txt
 
 # install dependencies
 RUN pip install --no-cache-dir --upgrade pip &&\
  pip install --no-cache-dir -r requirements.txt &&\
  pip install --no-cache-dir gunicorn==20.1.0
 
+COPY . .
 
 # prepare app data
 RUN python manage.py collectstatic --clear --noinput &&\

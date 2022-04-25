@@ -42,6 +42,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# use only local connection
+ALLOWED_HOSTS = ['127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:1337", "https://127.0.0.1:1337"]
+
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

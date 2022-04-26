@@ -8,6 +8,9 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+
+EXPOSE 8000
+
 RUN apk update &&\
     apk --no-cache add gettext
 

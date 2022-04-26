@@ -1,4 +1,3 @@
-version: "3.9"
 
 services:
   web:
@@ -19,7 +18,6 @@ services:
       - SECRET_KEY=${WEB_KEY}
     depends_on:
       - postgres
-    command: ["/app/entrypoint.sh", "gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi"]
 
 
   postgres:

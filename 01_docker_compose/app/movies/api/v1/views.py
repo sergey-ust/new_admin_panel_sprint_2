@@ -4,7 +4,11 @@ from django.http import JsonResponse
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
 
-from movies.models import FilmWork
+from movies.models import FilmWork, PersonFilmWork
+
+
+PersonRole = PersonFilmWork.Role
+
 
 MoviesList = dict[int, int, int, int, list]
 
@@ -22,23 +26,20 @@ class MoviesApiMixin:
         return JsonResponse(context)
 
     @staticmethod
+    def get_person_aggregation(role: PersonRole):
+        return ArrayAgg(
+            'person__full_name',
+            filter=Q(person__personfilmwork__role=str(role)),
+            distinct=True
+        )
+
+    @staticmethod
     def model_to_dict(fw_queryset: QuerySet) -> dict:
         genre_list = ArrayAgg('genres__name', distinct=True)
-        actors = ArrayAgg(
-            'person__full_name',
-            filter=Q(person__personfilmwork__role="actor"),
-            distinct=True
-        )
-        directors = ArrayAgg(
-            'person__full_name',
-            filter=Q(person__personfilmwork__role="director"),
-            distinct=True
-        )
-        writers = ArrayAgg(
-            'person__full_name',
-            filter=Q(person__personfilmwork__role="writer"),
-            distinct=True
-        )
+        actors = MoviesApiMixin.get_person_aggregation(PersonRole.ACTOR)
+        directors = MoviesApiMixin.get_person_aggregation(PersonRole.DIRECTOR)
+        writers = MoviesApiMixin.get_person_aggregation(PersonRole.WRITER)
+
         queryset = fw_queryset.annotate(genre_list=genre_list).annotate(
             actors=actors).annotate(directors=directors).annotate(
             writers=writers)

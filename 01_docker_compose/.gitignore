@@ -1,0 +1,8 @@
+# IDE project folders
+/.idea
+/.vcs
+
+
+# Environment
+.env
+
